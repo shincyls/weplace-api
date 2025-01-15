@@ -12,9 +12,7 @@ exports.getAllUsers = async (req, res) => {
 
 exports.getSingleUser = async (req, res) => {
   try {
-    const getSingleUser = await User.findById(req.params.id, req.body, {
-      new: true,
-    });
+    const getSingleUser = await User.findById(req.params.id);
     res.status(200).json(getSingleUser);
   } catch (error) {
     res.status(400).json({ message: error.message });
