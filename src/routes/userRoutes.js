@@ -6,22 +6,24 @@ const {
   createUser,
   updateUser,
   deleteUser,
+  userFollow,
+  userUnfollow,
   searchNearbyUsers
 } = require('../controllers/userController');
 
 const router = express.Router();
 
 // Basic CRUD
-router.get('/users', getAllUsers);
-router.post('/users', createUser);
-router.get('/users/:id', getSingleUser);
-router.put('/users/:id', updateUser);
-router.delete('/users/:id', deleteUser);
+router.get('/', getAllUsers);
+router.post('/', createUser);
+router.get('/:id', getSingleUser);
+router.put('/:id/update', updateUser);
+router.delete('/:id/remove', deleteUser);
 
 // Advanced Requirements
-router.post('/users/signin', userSignIn);
-router.post('/users/follow', userFollow);
-router.post('/users/search', searchNearbyUsers);
+router.post('/:id/follow', userFollow);
+router.post('/:id/unfollow', userUnfollow);
+router.post('/:id/nearby', searchNearbyUsers);
 
 module.exports = router;
 

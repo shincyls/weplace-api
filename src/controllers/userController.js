@@ -1,6 +1,6 @@
 const User = require('../models/userModel');
 const bcrypt = require('bcryptjs');
-const jwt = require('jsonwebtoken');
+// const jwt = require('jsonwebtoken');
 // const { OAuth2Client } = require('google-auth-library');
 // const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
@@ -69,50 +69,37 @@ exports.deleteUser = async (req, res) => {
 
 // Advanced Requirements
 
-exports.userSignIn = async (req, res) => {
-  const { name, password, tokenId } = req.body;
+exports.userFollow = async (req, res) => {
+  try {
+    const currentUser = req.user; // Assuming authentication middleware
+    const targetUserId = req.params.id;
 
-  if (tokenId) {
-    try {
-      const ticket = await client.verifyIdToken({
-        idToken: tokenId,
-        audience: process.env.GOOGLE_CLIENT_ID,
-      });
-      const payload = ticket.getPayload();
-      let user = await User.findOne({ email: payload.email });
+    // Update current user's following list
+    await User.findByIdAndUpdate(currentUser._id, { $addToSet: { following: targetUserId } });
 
-      if (!user) {
-        user = new User({
-          name: payload.name,
-          email: payload.email,
-          googleId: payload.sub,
-        });
-        await user.save();
-      }
+    // Update target user's followers list
+    await User.findByIdAndUpdate(targetUserId, { $addToSet: { followers: currentUser._id } });
 
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
-      });
+    res.status(200).json({ message: 'Followed successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error following user', error });
+  }
+};
 
-      res.status(200).json({ token });
-    } catch (error) {
-      res.status(400).json({ message: error.message });
-    }
-  } else {
-    try {
-      const user = await User.findOne({ name });
-      if (!user || !(await bcrypt.compare(password, user.password))) {
-        return res.status(400).json({ message: 'Invalid credentials' });
-      }
+exports.userUnfollow = async (req, res) => {
+  try {
+    const currentUser = req.user;
+    const targetUserId = req.params.id;
 
-      const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-        expiresIn: '1h',
-      });
+    // Update current user's following list
+    await User.findByIdAndUpdate(currentUser._id, { $pull: { following: targetUserId } });
 
-      res.status(200).json({ token });
-    } catch (error) {
-      res.status(500).json({ message: error.message });
-    }
+    // Update target user's followers list
+    await User.findByIdAndUpdate(targetUserId, { $pull: { followers: currentUser._id } });
+
+    res.status(200).json({ message: 'Unfollowed successfully' });
+  } catch (error) {
+    res.status(500).json({ message: 'Error unfollowing user', error });
   }
 };
 
@@ -125,7 +112,7 @@ exports.searchNearbyUsers = async (req, res) => {
 
   const lat = parseFloat(latitude);
   const lon = parseFloat(longitude);
-  // For equitor 0.01 degree is approx 1.1132 km, so we search for users within 1.1132 km radius
+  // Equitor 0.01 degree is approx 1.1132 km, so we search for users within 1.1132 km radius
   // For backend performance purpose, using simple query for a rough dataset
   // On frontend, use harvesine formula for precise circular radius filter from received data
   // User can or cannot adjust scaling on frontend, but if scaling changed will recall this API
@@ -142,3 +129,4 @@ exports.searchNearbyUsers = async (req, res) => {
   }
 
 };
+
