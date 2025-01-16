@@ -71,16 +71,24 @@ exports.deleteUser = async (req, res) => {
 
 exports.userFollow = async (req, res) => {
   try {
-    const currentUser = req.user; // Assuming authentication middleware
+    const currentUser = req.user; // As we are using checkAuth middleware, we can access user from req
     const targetUserId = req.params.id;
 
-    // Update current user's following list
+    // Validate if user is trying to follow themselves or already following
+    if(currentUser._id === targetUserId) {
+      return res.status(400).json({ message: 'Cannot Follow Yourself', error });
+    } 
+    
+    const isFollowing = await User.findOne({ _id: currentUser._id, following: targetUserId });
+    if (isFollowing) {
+      return res.status(400).json({ message: 'Already following this user' });
+    }
+
+    // Proceed to follow user
     await User.findByIdAndUpdate(currentUser._id, { $addToSet: { following: targetUserId } });
-
-    // Update target user's followers list
     await User.findByIdAndUpdate(targetUserId, { $addToSet: { followers: currentUser._id } });
-
     res.status(200).json({ message: 'Followed successfully' });
+
   } catch (error) {
     res.status(500).json({ message: 'Error following user', error });
   }
@@ -103,30 +111,45 @@ exports.userUnfollow = async (req, res) => {
   }
 };
 
-exports.searchNearbyUsers = async (req, res) => {
-  const { latitude, longitude, scale } = req.query;
+exports.searchFollowersAndFollowingsNearby = async (req, res) => {
 
-  if (!latitude || !longitude) {
-    return res.status(400).json({ message: 'Latitude and Longitude are required.' });
+  const { username, scale = 1 } = req.query;
+
+  if (!username) {
+    return res.status(400).json({ message: 'Username is required.' });
   }
 
-  const lat = parseFloat(latitude);
-  const lon = parseFloat(longitude);
-  // Equitor 0.01 degree is approx 1.1132 km, so we search for users within 1.1132 km radius
-  // For backend performance purpose, using simple query for a rough dataset
-  // On frontend, use harvesine formula for precise circular radius filter from received data
-  // User can or cannot adjust scaling on frontend, but if scaling changed will recall this API
-  const range = 0.01 * parseFloat(scale);
-
   try {
-    const nearbyUsers = await User.find({
+    const user = await User.findOne({ username });
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Equitor 0.01 degree is approx 1.1132 km, so we search for users within 1.1132 km radius
+    // For backend performance purpose, using simple query for a rough dataset
+    // On frontend, use harvesine formula for precise circular radius filter from received data
+    // User can or cannot adjust scaling on frontend, but if scaling changed will recall this API
+    
+    const lat = user.latitude;
+    const lon = user.longitude;
+    const range = 0.01 * parseFloat(scale || 1);
+
+    const nearbyFollowers = await User.find({
+      _id: { $in: user.followers },
       latitude: { $gte: lat - range, $lte: lat + range },
       longitude: { $gte: lon - range, $lte: lon + range }
     });
-    res.status(200).json(nearbyUsers);
+
+    const nearbyFollowings = await User.find({
+      _id: { $in: user.following },
+      latitude: { $gte: lat - range, $lte: lat + range },
+      longitude: { $gte: lon - range, $lte: lon + range }
+    });
+
+    res.status(200).json({ nearbyFollowers, nearbyFollowings });
+
   } catch (error) {
     res.status(500).json({ message: error.message });
   }
-
 };
 

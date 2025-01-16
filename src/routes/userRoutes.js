@@ -12,18 +12,22 @@ const {
 } = require('../controllers/userController');
 
 const router = express.Router();
+const checkAuth = require('../middleware/authMiddleware');
 
 // Basic CRUD
-router.get('/', getAllUsers);
+
+// createUser do not need checkAuth as for user to create an account, they should not be logged in
 router.post('/', createUser);
-router.get('/:id', getSingleUser);
-router.put('/:id/update', updateUser);
-router.delete('/:id/remove', deleteUser);
+router.get('/', checkAuth, getAllUsers);
+router.get('/:id', checkAuth, getSingleUser);
+router.put('/:id/update', checkAuth, updateUser);
+router.delete('/:id/remove', checkAuth, deleteUser);
 
 // Advanced Requirements
-router.post('/:id/follow', userFollow);
-router.post('/:id/unfollow', userUnfollow);
-router.post('/:id/nearby', searchNearbyUsers);
+
+router.post('/:id/follow', checkAuth, userFollow);
+router.post('/:id/unfollow', checkAuth, userUnfollow);
+router.post('/:id/nearby', checkAuth, searchNearbyUsers);
 
 module.exports = router;
 
