@@ -1,4 +1,5 @@
 const express = require('express');
+const logger = require('../middleware/loggerMiddleware');
 
 const {
   localSignIn,
@@ -8,7 +9,7 @@ const {
 const router = express.Router();
 
 // Advanced Requirements
-router.post('/local', localSignIn);
+router.post('/local', logger, localSignIn);
 router.post('/google', googleSignIn);
 
 module.exports = router;
