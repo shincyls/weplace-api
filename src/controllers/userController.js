@@ -121,6 +121,7 @@ exports.searchFollowersAndFollowingsNearby = async (req, res) => {
   }
 
   try {
+
     const user = await User.findOne({ username: targetUser });
     if (!user) {
       return res.status(404).json({ message: 'User not found.' });
@@ -139,13 +140,13 @@ exports.searchFollowersAndFollowingsNearby = async (req, res) => {
       _id: { $in: user.followers },
       latitude: { $gte: lat - range, $lte: lat + range },
       longitude: { $gte: lon - range, $lte: lon + range }
-    }).select('username latitude longitude');
+    });
 
     const nearbyFollowings = await User.find({
       _id: { $in: user.following },
       latitude: { $gte: lat - range, $lte: lat + range },
       longitude: { $gte: lon - range, $lte: lon + range }
-    }).select('username latitude longitude');
+    });
 
     res.status(200).json({ nearbyFollowers, nearbyFollowings });
 

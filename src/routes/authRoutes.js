@@ -3,14 +3,18 @@ const logger = require('../middleware/loggerMiddleware');
 
 const {
   localSignIn,
-  googleSignIn
+  googleSignIn,
+  googleCallback,
+  googleLogout
 } = require('../controllers/authController');
 
 const router = express.Router();
 
 // Advanced Requirements
 router.post('/local', logger, localSignIn);
-router.post('/google', googleSignIn);
+router.get('/google', googleSignIn);
+router.get('/google/callback', googleCallback);
+router.get('/google/logout', googleLogout);
 
 module.exports = router;
 
