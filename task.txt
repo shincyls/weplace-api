@@ -4,6 +4,6 @@
 4. Logging - done
 
 5. Automate Testing - ?
-6. API Documentation
-7. Project Documentation
-8. Codes Commenting
+6. API Documentation - Odw
+7. Project Documentation - done
+8. Codes Commenting - ?

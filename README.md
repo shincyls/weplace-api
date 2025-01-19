@@ -14,7 +14,7 @@ This API provides functionality for managing users in a system, including user c
 - **User Management:** Create, update, delete, and retrieve user details.
 - **Authentication:** Local and Google-based sign-in for secure access.
 - **Social Features:** Follow/unfollow functionality for building connections.
-- **Search:** Query nearby users based on the username.
+- **Search:** Query nearby followings and followers of a user based on userid and a scale value.
 
 ## File Structure
 ```
