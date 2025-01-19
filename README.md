@@ -89,7 +89,7 @@ Use the base URL from your `.env` file or `http://localhost:<PORT>` for local de
 ## Testing the API
 - Open Postman or any other API client.
 - Set the base URL for your requests (e.g., `http://localhost:3000`).
-- Test the endpoints with the payloads and methods defined in the Postman Documentation.
+- Test the endpoints with the payloads and methods defined in the [Postman Documentation](https://documenter.getpostman.com/view/335340/2sAYQanBzi)
 - For authenticated routes, include the JWT token in the Authorization header:
     ```
     Authorization: Bearer <your_token>
