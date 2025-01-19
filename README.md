@@ -1,4 +1,4 @@
-# User Management RESTFUL-API Documentation
+# RESTFUL-API >> User Management Documentation
 
 ## Overview
 This API provides functionality for managing users in a system, including user creation, updating, authentication, following/unfollowing, and searching nearby users. The system supports two authentication methods: local sign-in and Google sign-in.
