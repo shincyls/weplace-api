@@ -127,10 +127,9 @@ exports.searchFollowersAndFollowingsNearby = async (req, res) => {
       return res.status(404).json({ message: 'User not found.' });
     }
 
-    // Equitor 0.01 degree is approx 1.1132 km, so we search for users within 1.1132 km radius
+    // Equitor 0.01 degree of lat/lon is approx 1.1132 km, so we search for users within 1.1132 km radius to appox for 1km
     // For backend performance purpose, using simple query for a rough dataset
     // On frontend, use harvesine formula for precise circular radius filter from received data
-    // User can or cannot adjust scaling on frontend, but if scaling changed will recall this API
 
     const lat = user.latitude;
     const lon = user.longitude;

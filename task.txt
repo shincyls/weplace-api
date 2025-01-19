@@ -2,8 +2,10 @@
 2. Search Nearby Friends - done
 3. Google Auth - done
 4. Logging - done
-
 5. Automate Testing - Use Postman
-6. API Documentation - expected output?
 7. Project Documentation - done
-8. Codes Commenting - ?
+8. Codes Commenting - done
+
+LAST
+6. API Documentation - expected output?
+
