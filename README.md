@@ -18,22 +18,28 @@ This API provides functionality for managing users in a system, including user c
 
 ## File Structure
 ```
-project/
-├── controllers/
-│   ├── userController.js   # Handles logic for user endpoints
-│   └── authController.js   # Handles authentication logic
-├── models/
-│   └── userModel.js        # Defines database schema for users
-├── routes/
-│   ├── userRoutes.js       # User-related routes
-│   └── authRoutes.js       # Authentication-related routes
-├── middlewares/
-│   └── authMiddleware.js   # Middleware for authentication checks
-├── config/
-│   ├── database.js         # Database connection settings
-│   └── keys.js             # Configuration for tokens, secrets
-├── app.js                  # Main application entry point
-└── package.json            # Project metadata and dependencies
+restuful-api/
+├── src/
+│   ├── controllers/
+│   │   ├── userController.js   # Handles logic for user endpoints
+│   │   └── authController.js   # Handles authentication logic
+│   ├── models/
+│   │   └── userModel.js        # Defines database schema for users
+│   ├── routes/
+│   │   ├── userRoutes.js       # User-related routes
+│   │   └── authRoutes.js       # Authentication-related routes
+│   └── middlewares/
+│       ├── authMiddleware.js   # Middleware for authentication checks
+│       └── loggerMiddleware.js # Middleware for logging requests
+├── logs/
+│   └── server.log              # Log file for error logging on selected routes
+├── helpers/
+│   └── generateUsers.js        # Script to generate users
+├── tests/
+│   └── userTests.js            # Script to test users related controller
+├── app.js                      # Main application file for global configuration
+├── server.js                   # Main entery file for start server
+└── package.json                # Project metadata and dependencies
 ```
 
 ## Prerequisites
@@ -41,7 +47,7 @@ project/
 - **Database:** Set up a MongoDB Atlas cluster and obtain the connection string.
 - **Environment Variables:** Create a `.env` file in the root directory with the following keys:
     ```
-    DB_URI=your_mongodb_atlas_connection_string
+    MONGO_URI=your_mongodb_atlas_connection_string
     JWT_SECRET=your_jwt_secret
     GOOGLE_CLIENT_ID=your_google_client_id
     GOOGLE_CLIENT_SECRET=your_google_client_secret
@@ -53,8 +59,8 @@ project/
 
 ### Clone the repository:
 ```bash
-git clone https://github.com/your-repo-url.git
-cd project
+git clone https://github.com/shincyls/restful-api
+cd restful-api
 ```
 
 ### Install dependencies:
