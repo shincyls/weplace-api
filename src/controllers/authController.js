@@ -5,9 +5,9 @@ const { OAuth2Client } = require('google-auth-library');
 require('dotenv').config();
 
 const oAuth2Client = new OAuth2Client(
-    process.env.GOOGLE_CLIENT_ID,       // Your Client ID
-    process.env.GOOGLE_CLIENT_SECRET,  // Your Client Secret
-    process.env.GOOGLE_REDIRECT_URI    // Your Redirect URI
+    process.env.GOOGLE_CLIENT_ID,       // Google Client ID in .env
+    process.env.GOOGLE_CLIENT_SECRET,  // Google Client Secret in .env
+    process.env.GOOGLE_REDIRECT_URI    // Google Redirect URI in .env
 );
 
 exports.localSignIn = async (req, res) => {

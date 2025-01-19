@@ -1,0 +1,9 @@
+1. Follow/Unfollow Friends - done
+2. Search Nearby Friends - done
+3. Google Auth - done
+4. Logging - done
+
+5. Automate Testing - ?
+6. API Documentation
+7. Project Documentation
+8. Codes Commenting
