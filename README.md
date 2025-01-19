@@ -21,18 +21,18 @@ This API provides functionality for managing users in a system, including user c
 restuful-api/
 ├── src/
 │   ├── controllers/
-│   │   ├── userController.js   # Handles logic for user endpoints
-│   │   └── authController.js   # Handles authentication logic
+│   │   ├── userController.js   # Handles logic for user related endpoints
+│   │   └── authController.js   # Handles authentication/authorization related logic
 │   ├── models/
 │   │   └── userModel.js        # Defines database schema for users
 │   ├── routes/
 │   │   ├── userRoutes.js       # User-related routes
 │   │   └── authRoutes.js       # Authentication-related routes
 │   └── middlewares/
-│       ├── authMiddleware.js   # Middleware for authentication checks
+│       ├── authMiddleware.js   # Middleware for jwt-token authentication checks
 │       └── loggerMiddleware.js # Middleware for logging requests
 ├── logs/
-│   └── server.log              # Log file for error logging on selected routes
+│   └── server.log              # Log file for logging on selected routes
 ├── helpers/
 │   └── generateUsers.js        # Script to generate users
 ├── tests/
