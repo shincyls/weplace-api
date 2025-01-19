@@ -10,8 +10,10 @@ const {
 
 const router = express.Router();
 
-// Advanced Requirements
+// localSignIn is the route for users to login using email and password with inhouse database (local strategy)
 router.post('/local', logger, localSignIn);
+
+// googleSignIn is the route for users to login using Google (OAuth strategy)
 router.get('/google', googleSignIn);
 router.get('/google/callback', googleCallback);
 router.get('/google/logout', googleLogout);

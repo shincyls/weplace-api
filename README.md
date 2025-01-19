@@ -59,7 +59,7 @@ restuful-api/
 
 ### Clone the repository:
 ```bash
-git clone https://github.com/shincyls/restful-api
+git clone https://github.com/shincyls/restful-api.git
 cd restful-api
 ```
 

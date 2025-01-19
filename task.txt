@@ -3,7 +3,7 @@
 3. Google Auth - done
 4. Logging - done
 
-5. Automate Testing - ?
-6. API Documentation - Odw
+5. Automate Testing - Use Postman
+6. API Documentation - expected output?
 7. Project Documentation - done
 8. Codes Commenting - ?
