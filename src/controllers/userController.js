@@ -1,11 +1,10 @@
 const User = require('../models/userModel');
+const ProductOrder = require('../models/productModel');
+const ProductOrderUser = require('../models/productModel');
+const ProductUserReview = require('../models/productModel');
 const bcrypt = require('bcryptjs');
-// const jwt = require('jsonwebtoken');
-// const { OAuth2Client } = require('google-auth-library');
-// const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID);
 
 // Basic CRUD
-
 exports.getAllUsers = async (req, res) => {
   try { 
     const users = await User.find();
@@ -15,10 +14,10 @@ exports.getAllUsers = async (req, res) => {
   }
 };
 
-exports.getSingleUser = async (req, res) => {
+exports.getUser = async (req, res) => {
   try {
-    const getSingleUser = await User.findById(req.params.id);
-    res.status(200).json(getSingleUser);
+    const getUser = await User.findById(req.params.id);
+    res.status(200).json(getUser);
   } catch (error) {
     res.status(400).json({ message: error.message });
   }
@@ -48,6 +47,17 @@ exports.createUser = async (req, res) => {
 
 exports.updateUser = async (req, res) => {
   try {
+    const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+      new: true,
+    });
+    res.status(200).json(updatedUser);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.updateUserPassword = async (req, res) => {
+  try {
     const password = req.body.password;
     if (password) {
       if (password.length < 8) {
@@ -66,6 +76,22 @@ exports.updateUser = async (req, res) => {
   }
 };
 
+exports.updateUserLocation = async (req, res) => {
+  try {
+    const location = req.body.location;
+    if (location) {
+      const updatedUser = await User.findByIdAndUpdate(req.params.id, req.body, {
+        new: true,
+      });
+      res.status(200).json(updatedUser);
+    } else {
+      res.status(400).json({ message: 'Location is required.' });
+    }
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
 exports.deleteUser = async (req, res) => {
   try {
     await User.findByIdAndDelete(req.params.id);
@@ -77,89 +103,100 @@ exports.deleteUser = async (req, res) => {
 
 
 // Advanced Requirements
-
-exports.userFollow = async (req, res) => {
+exports.userProductsLive = async (req, res) => {
   try {
-    const currentUser = req.user; // As we are using checkAuth middleware, we can access user from req
-    const targetUserId = req.params.id;
-
-    // Validate if user is trying to follow themselves or already following
-    if(currentUser._id === targetUserId) {
-      return res.status(400).json({ message: 'Cannot Follow Yourself', error });
-    } 
-    
-    const isFollowing = await User.findOne({ _id: currentUser._id, following: targetUserId });
-    if (isFollowing) {
-      return res.status(400).json({ message: 'Already following this user' });
-    }
-
-    // Proceed to follow user
-    await User.findByIdAndUpdate(currentUser._id, { $addToSet: { following: targetUserId } });
-    await User.findByIdAndUpdate(targetUserId, { $addToSet: { followers: currentUser._id } });
-    res.status(200).json({ message: 'Followed successfully' });
-
-  } catch (error) {
-    res.status(500).json({ message: 'Error following user', error });
-  }
-};
-
-exports.userUnfollow = async (req, res) => {
-  try {
-    const currentUser = req.user;
-    const targetUserId = req.params.id;
-
-    // Update current user's following list
-    await User.findByIdAndUpdate(currentUser._id, { $pull: { following: targetUserId } });
-
-    // Update target user's followers list
-    await User.findByIdAndUpdate(targetUserId, { $pull: { followers: currentUser._id } });
-
-    res.status(200).json({ message: 'Unfollowed successfully' });
-  } catch (error) {
-    res.status(500).json({ message: 'Error unfollowing user', error });
-  }
-};
-
-exports.searchFollowersAndFollowingsNearby = async (req, res) => {
-
-  const { scale = 1 } = req.query;
-  const targetUser = req.params.id;
-
-  if (!targetUser) {
-    return res.status(400).json({ message: 'Username is required.' });
-  }
-
-  try {
-
-    const user = await User.findById(req.params.id);
-    if (!user) {
-      return res.status(404).json({ message: 'User not found.' });
-    }
-
-    // Equitor 0.01 degree of lat/lon is approx 1.1132 km, so we search for users within 1.1132 km radius to appox for 1km
-    // For backend performance purpose, using simple query for a rough dataset
-    // On frontend, use harvesine formula for precise circular radius filter from received data
-
-    const lat = user.latitude;
-    const lon = user.longitude;
-    const range = 0.01 * parseFloat(scale || 1);
-
-    const nearbyFollowers = await User.find({
-      _id: { $in: user.followers },
-      latitude: { $gte: lat - range, $lte: lat + range },
-      longitude: { $gte: lon - range, $lte: lon + range }
+    const today = new Date();
+    const liveProducts = await ProductOrder.find({
+      startTime: { $lt: today },
+      endTime: { $gt: today },
+      locationId: { $in: req.user.location_id }
     });
-
-    const nearbyFollowings = await User.find({
-      _id: { $in: user.following },
-      latitude: { $gte: lat - range, $lte: lat + range },
-      longitude: { $gte: lon - range, $lte: lon + range }
-    });
-
-    res.status(200).json({ nearbyFollowers, nearbyFollowings });
-
+    res.status(200).json(liveProducts);
   } catch (error) {
     res.status(500).json({ message: error.message });
+  }
+};
+
+exports.userProductsHistory = async (req, res) => {
+  try {
+    const today = new Date();
+    const historyProducts = await ProductOrder.find({
+      endTime: { $lt: today },
+      locationId: { $in: req.user.location_id },
+      sellerId: req.user.id
+    });
+    res.status(200).json(historyProducts);
+  } catch (error) {
+    res.status(500).json({ message: error.message });
+  }
+};
+
+exports.userProductOrderUserAdd = async (req, res) => {
+  try {
+    const { productOrderId, productId, orderUnit, orderRemarks, orderOption } = req.body;
+    const userId = req.user._id;
+
+    const newProductOrderUser = await ProductOrderUser.create({
+      productOrderId,
+      productId,
+      userId,
+      orderUnit,
+      orderRemarks,
+      orderOption
+    });
+
+    res.status(201).json(newProductOrderUser);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.userProductOrderUserPayment = async (req, res) => {
+  try {
+    const { productOrderId, paymentInfo, paymentType } = req.body;
+
+    const updatedProductOrderUser = await ProductOrderUser.findOneAndUpdate(
+      { productOrderId },
+      { paymentInfo, paymentType, paymentStatus: true },
+      { new: true }
+    );
+
+    res.status(200).json(updatedProductOrderUser);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.userProductOrderUserCancel = async (req, res) => {
+  try {
+    const { productOrderId } = req.body;
+
+    const updatedProductOrderUser = await ProductOrderUser.findOneAndUpdate(
+      { productOrderId },
+      { orderStatus: false },
+      { new: true }
+    );
+
+    res.status(200).json(updatedProductOrderUser);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
+  }
+};
+
+exports.userProductUserReview = async (req, res) => {
+  try {
+    const { productOrderId, review } = req.body;
+    const userId = req.user._id;
+
+    const newProductUserReview = await ProductUserReview.create({
+      productOrderId,
+      userId,
+      review
+    });
+
+    res.status(201).json(newProductUserReview);
+  } catch (error) {
+    res.status(400).json({ message: error.message });
   }
 };
 

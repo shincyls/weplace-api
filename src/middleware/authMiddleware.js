@@ -15,10 +15,11 @@ const checkAuth = async (req, res, next) => {
         const user = await User.findById(decoded.id);
 
         if (!user) {
-            return res.status(401).json({ status: false, message: 'Unauthorized user' });
+            return res.status(401).json({ status: false, message: 'Unauthorized User' });
         }
 
         req.user = user; // Attach the user data to the request object
+        req.seller = seller; // If Seller routes are needed
         // req.role = role; // If Admin or VIP routes are needed
 
         next(); // Allow the request to proceed to the next middleware or route handler

@@ -2,34 +2,42 @@ const express = require('express');
 
 const {
   getAllUsers,
-  getSingleUser,
+  getUser,
   createUser,
   updateUser,
   deleteUser,
-  userFollow,
-  userUnfollow,
-  searchFollowersAndFollowingsNearby
+  updateUserPassword,
+  updateUserLocation,
+  userProductsLive,
+  userProductsHistory,
+  userProductOrderUserAdd,
+  userProductOrderUserPayment,
+  userProductOrderUserCancel,
+  userProductUserReview
 } = require('../controllers/userController');
 
 const router = express.Router();
 const checkAuth = require('../middleware/authMiddleware');
-const logger = require('../middleware/loggerMiddleware');
-
-// Routes that included checkAuth are routes that require user to be logged in
-// Routes that included logger are routes that will log the request details, so we can flexibly add or remove logging for each route
-// For simple showcase purpose, checkAuth only implemented in userFollow, userUnfollow to identify current user purpose. 
-// In real world, we should implement checkAuth in all routes that require user to be logged in except signIn/signUp/forgetPassword/etc
+// const logger = require('../middleware/loggerMiddleware');
 
 // Basic CRUD
-router.post('/', logger, createUser); // createUser do not need checkAuth as for user to SignUp, they should not be logged in yet
-router.get('/', logger, getAllUsers);
-router.get('/:id', logger, getSingleUser);
-router.put('/:id/update', logger, updateUser);
-router.delete('/:id/remove', logger, deleteUser);
+router.post('/', createUser);
+router.get('/', getAllUsers);
+router.get('/:id', getUser);
+router.put('/:id/update', checkAuth, updateUser);
+router.delete('/:id/remove', checkAuth, deleteUser);
+
 // Advanced Requirements
-router.post('/:id/follow', checkAuth, logger, userFollow);
-router.post('/:id/unfollow', checkAuth, logger, userUnfollow);
-router.get('/:id/nearby', logger, searchFollowersAndFollowingsNearby);
+router.put('/:id/update/password', checkAuth, updateUserPassword);
+router.put('/:id/update/location', checkAuth, updateUserLocation);
+
+// Advanced Requirements, required location_id
+router.post('/products/live', checkAuth, userProductsLive); // get all productOrder where productOrder.startTime<today and endtime>today where req.user.location_id is in productOrder.locationIds
+router.post('/products/history', checkAuth, userProductsHistory); // get all productOrder where productOrder.endtime<today where req.user.location_id is in productOrder.locationIds and sellerId=req.user.id
+router.post('/product/order', checkAuth, userProductOrderUserAdd); // create productOrderUser where productOrderId=req.body.productOrderId
+router.post('/product/payment', checkAuth, userProductOrderUserPayment); // update productOrderUser where productOrderId=req.body.productOrderId
+router.post('/product/cancel', checkAuth, userProductOrderUserCancel); //  update productOrderUser where productOrderId=req.body.productOrderId
+router.post('/product/review', checkAuth, userProductUserReview); // create productUserReview where productOrderId=req.body.productOrderId
 
 module.exports = router;
 
