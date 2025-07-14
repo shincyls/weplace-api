@@ -1,9 +1,11 @@
-const CreditBalance = require('../models/creditBalanceModel');
+// Payment Gateway Controllers are using by User/Seller to purchase credits thru payment gateway
+
+const Payment = require('../models/payment/paymentModel');
 
 // Create a new credit balance
 exports.createCreditBalance = async (req, res) => {
     try {
-        const creditBalance = new CreditBalance(req.body);
+        const Payment = new Payment(req.body);
         await creditBalance.save();
         res.status(201).json(creditBalance);
     } catch (error) {

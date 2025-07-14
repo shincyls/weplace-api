@@ -1,13 +1,13 @@
-const User = require('../models/userModel');
+const User = require('../models/user/userModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
 require('dotenv').config();
 
 const oAuth2Client = new OAuth2Client(
-    process.env.GOOGLE_CLIENT_ID,       // Google Client ID in .env
-    process.env.GOOGLE_CLIENT_SECRET,  // Google Client Secret in .env
-    process.env.GOOGLE_REDIRECT_URI    // Google Redirect URI in .env
+    process.env.GOOGLE_CLIENT_ID,
+    process.env.GOOGLE_CLIENT_SECRET,
+    process.env.GOOGLE_REDIRECT_URI
 );
 
 exports.localSignIn = async (req, res) => {
@@ -32,6 +32,7 @@ exports.localSignIn = async (req, res) => {
              username: user.username, 
              email: user.email,
              location: user.locationId,
+             timestamp: moment().format(),
              token: token
         });
 

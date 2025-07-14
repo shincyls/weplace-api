@@ -1,5 +1,6 @@
 const jwt = require('jsonwebtoken');
-const User = require('../models/userModel');
+const moment = require('moment');
+const User = require('../models/user/userModel');
 
 const checkAuth = async (req, res, next) => {
     const authHeader = req.headers.authorization;
@@ -11,18 +12,25 @@ const checkAuth = async (req, res, next) => {
     const token = authHeader.split(' ')[1];
 
     try {
+
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
         const user = await User.findById(decoded.id);
+        const time = moment(decoded.timestamp);
+        const expired = (moment() - time > 3600000) ? true : false;
 
         if (!user) {
             return res.status(401).json({ status: false, message: 'Unauthorized User' });
         }
 
-        req.user = user; // Attach the user data to the request object
-        req.seller = seller; // If Seller routes are needed
-        // req.role = role; // If Admin or VIP routes are needed
+        if (expired) {
+            return res.status(401).json({ status: false, message: 'Session Expired' });
+        }
 
-        next(); // Allow the request to proceed to the next middleware or route handler
+        req.user = user;
+        req.seller = decoded.seller;
+        req.role = decoded.role;
+
+        next();
 
     } catch (error) {
         return res.status(401).json({ status: false, message: 'Unauthorized user' });

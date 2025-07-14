@@ -1,6 +1,9 @@
-const Seller = require('../models/sellerModel');
-const Product = require('../models/productModel');
-const ProductOrder = require('../models/productModel');
+// Seller Controllers are using by User to register as a seller in a location
+
+const Seller = require('../models/sellersellerModel');
+const Product = require('../models/product/productModel');
+const Sale = require('../models/sale/saleModel');
+const Groupbuy = require('../models/groupbuy/groupBuyModel');
 
 // Register as new seller
 exports.createSeller = async (req, res) => {
