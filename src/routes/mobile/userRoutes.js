@@ -14,10 +14,10 @@ const {
   userProductOrderUserPayment,
   userProductOrderUserCancel,
   userProductUserReview
-} = require('../controllers/userController');
+} = require('../controllers/mobile/user/userController');
 
 const router = express.Router();
-const checkAuth = require('../middleware/authMiddleware');
+const checkAuth = require('../middleware/mobile/authMiddleware');
 // const logger = require('../middleware/loggerMiddleware');
 
 // Basic CRUD

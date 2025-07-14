@@ -1,7 +1,9 @@
-const User = require('../models/userModel');
-const ProductOrder = require('../models/productModel');
-const ProductOrderUser = require('../models/productModel');
-const ProductUserReview = require('../models/productModel');
+const User = require('../models/user/userModel');
+const UserCreditBalance = require('../models/user/userCreditBalanceModel');
+const ProductReview = require('../models/product/productReviewModel');
+const ProductReport = require('../models/product/productReportModel');
+const SellerReview = require('../models/seller/sellerReviewModel');
+const SellerReport = require('../models/seller/sellerReportModel');
 const bcrypt = require('bcryptjs');
 
 // Basic CRUD
@@ -197,6 +199,50 @@ exports.userProductUserReview = async (req, res) => {
     res.status(201).json(newProductUserReview);
   } catch (error) {
     res.status(400).json({ message: error.message });
+  }
+};
+
+// Register or update a device for push notifications
+exports.registerOrUpdateDevice = async (req, res) => {
+  try {
+    const userId = req.params.id;
+    const { deviceToken, deviceType, appVersion, deviceId } = req.body;
+    if (!deviceToken || !deviceType) {
+      return res.status(400).json({ message: 'deviceToken and deviceType are required.' });
+    }
+
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'User not found.' });
+    }
+
+    // Find device by deviceId or deviceToken
+    let deviceIndex = user.devices.findIndex(
+      d => (deviceId && d.deviceId === deviceId) || d.deviceToken === deviceToken
+    );
+
+    if (deviceIndex !== -1) {
+      // Update existing device
+      user.devices[deviceIndex].deviceToken = deviceToken;
+      user.devices[deviceIndex].deviceType = deviceType;
+      user.devices[deviceIndex].appVersion = appVersion;
+      user.devices[deviceIndex].deviceId = deviceId;
+      user.devices[deviceIndex].lastActive = new Date();
+    } else {
+      // Add new device
+      user.devices.push({
+        deviceToken,
+        deviceType,
+        appVersion,
+        deviceId,
+        lastActive: new Date()
+      });
+    }
+
+    await user.save();
+    res.status(200).json({ message: 'Device registered/updated successfully.' });
+  } catch (error) {
+    res.status(500).json({ message: error.message });
   }
 };
 

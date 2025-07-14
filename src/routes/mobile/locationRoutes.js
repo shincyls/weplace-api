@@ -6,11 +6,11 @@ const {
   getLocation,
   updateLocation,
   deleteLocation
-} = require('../controllers/locationController');
+} = require('../controllers/mobile/location/locationController');
 
 const router = express.Router();
-const checkAuth = require('../middleware/authMiddleware');
-// const logger = require('../middleware/loggerMiddleware');
+const checkAuth = require('../middleware/mobile/authMiddleware');
+// const logger = require('../middleware/mobile/loggerMiddleware');
 
 // Basic CRUD
 router.get('/', checkAuth, getAllLocations);

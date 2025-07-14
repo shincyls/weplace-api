@@ -1,31 +1,21 @@
 const mongoose = require('mongoose');
 
-const userSchema = new mongoose.Schema({
+const adminSchema = new mongoose.Schema({
   username: { type: String, required: true, unique: true },
   email: { type: String, required: true, unique: true },
   name: { type: String, required: true },
   phone: { type: String },
   dob: { type: Date },
   password: { type: String },
-  oauthProvider: { type: String },
-  oauthId: { type: String },
-  locationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Location' },
+  position: { type: String },
+  department: { type: String },
   role: { type: String, enum: ['user', 'developer'], default: 'user' },
   currentCredits: { type: Number, default: 0.00, required: true },
   lastLogin: { type: Date },
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now },
-  devices: [
-    {
-      deviceToken: { type: String, required: true },
-      deviceType: { type: String, enum: ['ios', 'android'], required: true },
-      appVersion: { type: String },
-      deviceId: { type: String },
-      lastActive: { type: Date, default: Date.now }
-    }
-  ]
 });
 
-const User = mongoose.model('User', userSchema);
+const Admin = mongoose.model('Admin', adminSchema);
 
-module.exports = User
+module.exports = Admin

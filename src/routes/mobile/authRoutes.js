@@ -1,12 +1,12 @@
 const express = require('express');
-const logger = require('../middleware/loggerMiddleware');
+const logger = require('../middleware/mobile/loggerMiddleware');
 
 const {
   localSignIn,
   googleSignIn,
   googleCallback,
   googleLogout
-} = require('../controllers/authController');
+} = require('../controllers/mobile/auth/authController');
 
 const router = express.Router();
 

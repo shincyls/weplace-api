@@ -10,6 +10,30 @@ const oAuth2Client = new OAuth2Client(
     process.env.GOOGLE_REDIRECT_URI
 );
 
+exports.localSignUp = async (req, res) => {
+
+    const { username, password } = req.body;
+
+    if (!username || !password) {
+        return res.status(400).json({ message: 'Username and password are required' });
+    }
+
+    try {
+        const user = await User.findOne({ username });
+        if (user) {
+            return res.status(400).json({ message: 'Username is already taken' });
+        }
+        const salt = await bcrypt.genSalt(10);
+        req.body.password = await bcrypt.hash(password, salt);
+        const newUser = await User.create(req.body);
+        res.status(201).json(newUser);
+    } catch (error) {
+        res.status(500).json({ message: error.message });
+    }
+    
+};
+
+
 exports.localSignIn = async (req, res) => {
 
     const { username, password } = req.body;

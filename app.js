@@ -2,11 +2,11 @@ const express = require('express');
 const mongoose = require('mongoose');
 const dotenv = require('dotenv');
 const http = require('http');
-const userRoutes = require('./src/routes/userRoutes');
-const authRoutes = require('./src/routes/authRoutes');
-const locationRoutes = require('./src/routes/locationRoutes');
-const sellerRoutes = require('./src/routes/sellerRoutes');
-const chatRoutes = require('./src/routes/chatRoutes');
+const mobileUserRoutes = require('./src/routes/mobile/userRoutes');
+const mobileAuthRoutes = require('./src/routes/mobile/authRoutes');
+const mobileLocationRoutes = require('./src/routes/mobile/locationRoutes');
+const mobileSellerRoutes = require('./src/routes/mobile/sellerRoutes');
+const chatRoutes = require('./src/routes/mobile/chatRoutes');
 const { initializeSocketServer } = require('./src/socket/socketServer');
 
 // Read Config From .env File
@@ -23,10 +23,15 @@ const server = http.createServer(app);
 const io = initializeSocketServer(server);
 
 // API routes
-app.use('/api/v1/users', userRoutes);
-app.use('/api/v1/auth', authRoutes);
-app.use('/api/v1/location', locationRoutes);
-app.use('/api/v1/seller', sellerRoutes);
+app.use('/api/v1/users', mobileUserRoutes);
+app.use('/api/v1/auth', mobileAuthRoutes);
+app.use('/api/v1/location', mobileLocationRoutes);
+app.use('/api/v1/seller', mobileSellerRoutes);
+
+// Admin Routes
+// ('/admin/v1', adminRoutes);
+
+// Chat Routes
 app.use('/api/v1/chat', chatRoutes);
 
 // Make io accessible to routes

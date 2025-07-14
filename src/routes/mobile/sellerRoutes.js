@@ -16,10 +16,10 @@ const {
   getProductOrderById,
   updateProductOrderById,
   deleteProductOrderById
-} = require('../controllers/sellerController');
+} = require('../controllers/mobile/seller/sellerController');
 
 const router = express.Router();
-const checkAuth = require('../middleware/authMiddleware');
+const checkAuth = require('../middleware/mobile/authMiddleware');
 // const logger = require('../middleware/loggerMiddleware');
 
 // Basic CRUD

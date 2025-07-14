@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const { ChatRoom, ChatMessage } = require('../models/chatModel');
-const { authMiddleware } = require('../middleware/authMiddleware');
+const { authMiddleware } = require('../middleware/mobile/authMiddleware');
 
 // Get all chat rooms for the current user
 router.get('/rooms', authMiddleware, async (req, res) => {

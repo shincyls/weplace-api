@@ -1,8 +1,8 @@
 const socketIO = require('socket.io');
 const jwt = require('jsonwebtoken');
 const { ChatRoom, ChatMessage } = require('../models/chatModel');
-const { User } = require('../models/userModel');
-const { Seller } = require('../models/sellerModel');
+const { User } = require('../models/user/userModel');
+const { Seller } = require('../models/user/sellerModel');
 
 // User and room tracking
 const connectedUsers = new Map(); // userId -> socketId
