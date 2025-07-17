@@ -6,9 +6,7 @@ const sellerReportSchema = new mongoose.Schema({
   reportReason: { type: String, required: true },
   reportRemarks: { type: String },
   reportAttachments: [{ type: String }],
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
+}, { timestamps: true });
 
 const SellerReport = mongoose.model('SellerReport', sellerReportSchema);
 

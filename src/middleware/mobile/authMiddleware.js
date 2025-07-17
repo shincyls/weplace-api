@@ -14,7 +14,7 @@ const checkAuth = async (req, res, next) => {
     try {
 
         const decoded = jwt.verify(token, process.env.JWT_SECRET);
-        const user = await User.findById(decoded.id);
+        const user = await User.findById(decoded.user_id);
         const time = moment(decoded.timestamp);
         const expired = (moment() - time > 3600000) ? true : false;
 
@@ -26,14 +26,21 @@ const checkAuth = async (req, res, next) => {
             return res.status(401).json({ status: false, message: 'Session Expired' });
         }
 
-        req.user = user;
-        req.seller = decoded.seller;
+        req.user_id = user.id;
+        req.seller_id = decoded.seller_id;
+        req.location_id = decoded.location_id;
         req.role = decoded.role;
+        req.username = decoded.username, 
+        req.email = decoded.email,
+        req.phone = decoded.phone,
+        req.device = "",
+        req.version = "",
+        req.lang = ""
 
         next();
 
     } catch (error) {
-        return res.status(401).json({ status: false, message: 'Unauthorized user' });
+        return res.status(400).json({ status: false, message: 'Unauthorized Access' });
     }
 };
 

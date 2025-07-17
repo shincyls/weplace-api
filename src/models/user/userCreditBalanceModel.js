@@ -14,9 +14,7 @@ const userCreditBalanceSchema = new mongoose.Schema({
   status: { type: String, enum: ['success', 'failed', 'error', 'pending', 'processing'], required: true, default: 'pending' },
   metadata: { type: mongoose.Schema.Types.Mixed }, // Additional data
   ipAddress: { type: String },
-  createdBy: { type: String }, // User or system that created the transaction
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
+  createdBy: { type: String },
 }, { timestamps: true });
 
 // Indexing

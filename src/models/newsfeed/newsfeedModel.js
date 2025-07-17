@@ -6,7 +6,17 @@ const newsfeedSchema = new mongoose.Schema({
   title: { type: String, required: true },
   content: { type: String, required: true },
   attachments: [{ type: String }],
-  isActive: { type: Boolean, default: true },
+  tags: [{ type: String }],
+  replies: [
+    { 
+        userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+        content: { type: String },
+        likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+        createdAt: { type: Date, default: Date.now },
+        updatedAt: { type: Date, default: Date.now }
+    },
+  ],
+  likes: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   createdAt: { type: Date, default: Date.now },
   updatedAt: { type: Date, default: Date.now }
 });

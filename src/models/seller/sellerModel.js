@@ -2,7 +2,8 @@ const mongoose = require('mongoose');
 
 // To store the seller information
 const sellerSchema = new mongoose.Schema({
-  userId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
+  userId: { type: mongoose.Schema.Types.ObjectId, ref: 'User' },
+  subUserId: [{ type: mongoose.Schema.Types.ObjectId, ref: 'User' }],
   sellerName: { type: String, required: true, unique: true },
   sellerEmail: { type: String, required: true, unique: true },
   sellerType: { type: String, enum: ['personal', 'company', 'coorporate'], default: 'personal', required: true },
@@ -23,8 +24,7 @@ const sellerSchema = new mongoose.Schema({
   approvalBy: { type: String, default: 'admin' },
   approvalDate: { type: Date },
   currentCredits: { type: Number, default: 0.00, required: true },
-  createdAt: { type: Date, default: Date.now }
-});
+}, { timestamps: true });
 
 const Seller = mongoose.model('Seller', sellerSchema);
 

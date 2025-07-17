@@ -5,10 +5,8 @@ const productReportSchema = new mongoose.Schema({
   productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product' },
   reportReason: { type: String, required: true },
   reportRemarks: { type: String },
-  reportAttachments: [{ type: String }],
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
+  reportAttachments: [{ type: String }]
+}, { timestamps: true });
 
 const ProductReport = mongoose.model('ProductReport', productReportSchema);
 

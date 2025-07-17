@@ -8,7 +8,7 @@ const paymentGatewaySchema = new mongoose.Schema({
     amount: { type: Number, required: true },
     currency: { type: String, default: 'MYR' },
     remarks: { type: String },
-    reason: { type: String, enum: ['topup', 'cash', 'purchase', 'refund', 'subscription'], required: true, default: 'topup' },
+    type: { type: String, enum: ['topup', 'cash', 'purchase', 'refund', 'subscription'], required: true, default: 'topup' },
     ref: { type: String },
     status: { type: String, enum: ['pending', 'processing', 'success', 'fail', 'error', 'refunded', 'partially_refunded'], required: true, default: 'pending' },
     paymentMethod: { type: String, enum: ['credit_card', 'debit_card', 'bank_transfer', 'e_wallet', 'crypto', 'other'] },

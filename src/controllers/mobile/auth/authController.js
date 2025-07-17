@@ -1,4 +1,5 @@
 const User = require('../models/user/userModel');
+const Seller = require('../models/seller/sellerModel');
 const bcrypt = require('bcryptjs');
 const jwt = require('jsonwebtoken');
 const { OAuth2Client } = require('google-auth-library');
@@ -12,16 +13,16 @@ const oAuth2Client = new OAuth2Client(
 
 exports.localSignUp = async (req, res) => {
 
-    const { username, password } = req.body;
+    const { phone, password } = req.body;
 
-    if (!username || !password) {
-        return res.status(400).json({ message: 'Username and password are required' });
+    if (!phone || !password) {
+        return res.status(400).json({ message: 'Phone number and password are required' });
     }
 
     try {
-        const user = await User.findOne({ username });
+        const user = await User.findOne({ phone });
         if (user) {
-            return res.status(400).json({ message: 'Username is already taken' });
+            return res.status(400).json({ message: 'Phone number is already taken' });
         }
         const salt = await bcrypt.genSalt(10);
         req.body.password = await bcrypt.hash(password, salt);
@@ -33,7 +34,6 @@ exports.localSignUp = async (req, res) => {
     
 };
 
-
 exports.localSignIn = async (req, res) => {
 
     const { username, password } = req.body;
@@ -43,20 +43,37 @@ exports.localSignIn = async (req, res) => {
     }
 
     try {
+
         const user = await User.findOne({ username });
+        const seller = await Model.findOne({
+            $or: [
+              { userId: user.id },
+              { 'subUserId.id': user.id }
+            ]
+          });
+
         if (!user || !(await bcrypt.compare(password, user.password))) {
             return res.status(400).json({ message: 'Invalid credentials' });
+        } else {
+            
         }
-        const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET, {
-            expiresIn: '3h',
-        });
+        const token = jwt.sign({ 
+                user_id: user._id,
+                username: user.username, 
+                email: user.email,
+                phone: user.phone,
+                seller_id: seller ? seller.id : null, 
+                role: user.role,
+                location_id: user.locationId,
+                timestamp: moment().format(),
+            }, process.env.JWT_SECRET, 
+            {
+                expiresIn: '24h' // 24 hours expiration time for the token. You can change this value as per your requirement.
+            });
 
         res.status(200).json({
              user_id: user.id,
              username: user.username, 
-             email: user.email,
-             location: user.locationId,
-             timestamp: moment().format(),
              token: token
         });
 

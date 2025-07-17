@@ -4,26 +4,28 @@ const groupBuySchema = new mongoose.Schema({
   sellerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Seller', required: true },
   productId: { type: mongoose.Schema.Types.ObjectId, ref: 'Product', required: true },
   basePrice: { type: Number, required: true },
-  maxUnits: { type: Number},
-  minUnits: { type: Number, required: true },
-  // Upon >= tierTargetUnit has been reached, the basePrice will be adjusted to tierBasePrice
-  tieredPricing: [{
-    tierTargetUnit: { type: Number, required: true },
-    tierBasePrice: { type: Number, required: true }
+  maxUnits: { type: Number }, // Optional, if not set, no limit
+  mustMinTier : { type: Boolean, default: false }, // If true, must reach minTier to start groupbuy
+  tierPricing: [{
+    tierUnit: { type: Number, required: true },
+    tierPrice: { type: Number, required: true }
   }],
   deliveryRemarks: { type: String },
-  dealStartTime: { type: Date, required: true },
-  dealEndTime: { type: Date, required: true },
+  startTime: { type: Date, required: true },
+  endTime: { type: Date, required: true },
   status: { 
     type: String, 
-    enum: ['scheduled', 'active', 'collecting', 'success', 'fail', 'cancelled'], 
-    default: 'scheduled' 
+    enum: ['on-going', 'success', 'fail', 'cancelled'], 
+    default: 'on-going' 
   },
-  locationIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }],
-  totalLocations: { type: Number, default: 1 },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
-});
+  groupbuyOrderIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'GroupBuyOrder' }],
+  locationIds: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Location' }]
+}, { timestamps: true });
+
+groupBuySchema.index({ sellerId: 1, startTime: -1 });
+groupBuySchema.index({ productId: 1 });
+groupBuySchema.index({ status: 1 });
+groupBuySchema.index({ startTime: 1, endTime: 1 });
 
 const GroupBuy = mongoose.model('GroupBuy', groupBuySchema);
 

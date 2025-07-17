@@ -13,8 +13,6 @@ const userSchema = new mongoose.Schema({
   role: { type: String, enum: ['user', 'developer'], default: 'user' },
   currentCredits: { type: Number, default: 0.00, required: true },
   lastLogin: { type: Date },
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now },
   devices: [
     {
       deviceToken: { type: String, required: true },
@@ -24,7 +22,7 @@ const userSchema = new mongoose.Schema({
       lastActive: { type: Date, default: Date.now }
     }
   ]
-});
+}, { timestamps: true });
 
 const User = mongoose.model('User', userSchema);
 

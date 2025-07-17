@@ -14,8 +14,6 @@ const sellerCreditBalanceSchema = new mongoose.Schema({
   paymentGatewayId: { type: mongoose.Schema.Types.ObjectId, ref: 'PaymentGateway' },
   metadata: { type: mongoose.Schema.Types.Mixed },
   createdBy: { type: String }, 
-  createdAt: { type: Date, default: Date.now },
-  updatedAt: { type: Date, default: Date.now }
 }, { timestamps: true });
 
 // Indexing
