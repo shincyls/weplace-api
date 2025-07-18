@@ -7,13 +7,17 @@ const sellerCreditBalanceSchema = new mongoose.Schema({
   beforeBalance: { type: Number },
   afterBalance: { type: Number }, 
   remarks: { type: String },
+  reason: { type: String }, // Reason for the transaction groupbuy, sale payment
+  ref: { type: String }, // SaleId, GroupBuyId
   info: { type: String },
-  ref: { type: String },
   type: { type: String, enum: ['topup','transfer','credit', 'debit', 'refund'], required: true },
   status: { type: String, enum: ['success', 'failed', 'error', 'pending', 'processing'], required: true, default: 'pending' },
   paymentGatewayId: { type: mongoose.Schema.Types.ObjectId, ref: 'PaymentGateway' },
   metadata: { type: mongoose.Schema.Types.Mixed },
   createdBy: { type: String }, 
+  taxType: { type: String, enum: ['SST', 'GST', 'N/A'], default: 'N/A' },
+  taxRate: { type: Number },
+  taxAmount: { type: Number }
 }, { timestamps: true });
 
 // Indexing
