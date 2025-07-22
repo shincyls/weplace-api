@@ -1,5 +1,5 @@
-const Location = require('../models/location/locationModel');
-const Event = require('../models/event/eventModel');
+const Location = require('../../../models/location/locationModel');
+const Event = require('../../../models/event/eventModel');
 
 exports.getLocationEvents = async (req, res) => {
   try {

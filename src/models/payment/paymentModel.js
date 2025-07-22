@@ -39,7 +39,6 @@ const paymentGatewaySchema = new mongoose.Schema({
 
 // Indexes for better query performance
 paymentGatewaySchema.index({ userId: 1, createdAt: -1 });
-paymentGatewaySchema.index({ transactionId: 1 });
 paymentGatewaySchema.index({ status: 1 });
 
 // Method to handle webhook updates

@@ -1,9 +1,11 @@
 // For Seller To Mange Sale
 
-const Product = require('../models/product/productModel');
-const Sale = require('../models/sale/saleModel');
-const { Seller } = require('../../../models/seller/sellerModel');
+const Sale = require('../../../models/sale/saleModel');
+const Seller = require('../../../models/seller/sellerModel');
 const SellerCreditBalance = require('../../../models/seller/sellerCreditBalanceModel');
+const Location = require('../../../models/location/locationModel');
+const Product = require('../../../models/product/productModel');
+
 
 // Get all sales from seller Id in the token
 exports.getSellerSales = async (req, res) => {

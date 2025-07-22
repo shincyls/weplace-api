@@ -1,6 +1,6 @@
 // For User To Post a Event
 
-const Event = require('../models/event/eventModel');
+const Event = require('../../../models/event/eventModel');
 
 // Create a new event
 exports.createEvent = async (req, res) => {

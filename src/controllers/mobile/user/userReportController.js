@@ -1,7 +1,7 @@
 // For User To Report a Product or Seller
 
-const ProductReport = require('../models/product/productReportModel');
-const SellerReport = require('../models/seller/sellerReportModel');
+const ProductReport = require('../../../models/product/productReportModel');
+const SellerReport = require('../../../models/seller/sellerReportModel');
 
 // Create a new product report
 exports.createProductReport = async (req, res) => {

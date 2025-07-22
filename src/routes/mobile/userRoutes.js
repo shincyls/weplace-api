@@ -1,43 +1,40 @@
 const express = require('express');
-
-const {
-  getAllUsers,
-  getUser,
-  createUser,
-  updateUser,
-  deleteUser,
-  updateUserPassword,
-  updateUserLocation,
-  userProductsLive,
-  userProductsHistory,
-  userProductOrderUserAdd,
-  userProductOrderUserPayment,
-  userProductOrderUserCancel,
-  userProductUserReview
-} = require('../controllers/mobile/user/userController');
-
 const router = express.Router();
-const checkAuth = require('../middleware/mobile/authMiddleware');
-// const logger = require('../middleware/loggerMiddleware');
+const checkAuth = require('../../middleware/mobile/authMiddleware');
+const userController = require('../../controllers/mobile/user/userController');
+const userEventController = require('../../controllers/mobile/user/userEventController');
+const userOrderController = require('../../controllers/mobile/user/userOrderController');
+const userNewsfeedController = require('../../controllers/mobile/user/userNewsfeedController');
+const userReportController = require('../../controllers/mobile/user/userReportController');
+const userReviewController = require('../../controllers/mobile/user/userReviewController');
 
-// Basic CRUD
-router.post('/', createUser);
-router.get('/', getAllUsers);
-router.get('/:id', getUser);
-router.put('/:id/update', checkAuth, updateUser);
-router.delete('/:id/remove', checkAuth, deleteUser);
+// User profile
+router.get('/profile', checkAuth, userController.showUser);
+router.post('/profile/update', checkAuth, userController.updateUserProfile);
+router.post('/profile/password', checkAuth, userController.updateUserPassword);
+router.post('/profile/location', checkAuth, userController.updateUserLocation);
 
-// Advanced Requirements
-router.put('/:id/update/password', checkAuth, updateUserPassword);
-router.put('/:id/update/location', checkAuth, updateUserLocation);
+// Events
+router.post('/event', checkAuth, userEventController.createEvent);
+router.post('/event/:id/join', checkAuth, userEventController.joinEvent);
 
-// Advanced Requirements, required location_id
-router.post('/products/live', checkAuth, userProductsLive); // get all productOrder where productOrder.startTime<today and endtime>today where req.user.location_id is in productOrder.locationIds
-router.post('/products/history', checkAuth, userProductsHistory); // get all productOrder where productOrder.endtime<today where req.user.location_id is in productOrder.locationIds and sellerId=req.user.id
-router.post('/product/order', checkAuth, userProductOrderUserAdd); // create productOrderUser where productOrderId=req.body.productOrderId
-router.post('/product/payment', checkAuth, userProductOrderUserPayment); // update productOrderUser where productOrderId=req.body.productOrderId
-router.post('/product/cancel', checkAuth, userProductOrderUserCancel); //  update productOrderUser where productOrderId=req.body.productOrderId
-router.post('/product/review', checkAuth, userProductUserReview); // create productUserReview where productOrderId=req.body.productOrderId
+// Orders
+router.post('/order/sale', checkAuth, userOrderController.createSaleOrderUser);
+router.post('/order/groupbuy', checkAuth, userOrderController.createGroupbuyOrder);
+
+// Newsfeed
+router.post('/newsfeed', checkAuth, userNewsfeedController.createNewsfeed);
+router.post('/newsfeed/:id/reply', checkAuth, userNewsfeedController.replyNewsfeed);
+router.post('/newsfeed/:id/like', checkAuth, userNewsfeedController.addLike);
+
+// Reports
+router.post('/report/product', checkAuth, userReportController.createProductReport);
+router.post('/report/seller', checkAuth, userReportController.createSellerReport);
+
+// Reviews
+router.post('/review/product', checkAuth, userReviewController.createProductReview);
+router.post('/review/product/:id/update', checkAuth, userReviewController.updateProductReview);
+router.post('/review/seller', checkAuth, userReviewController.createSellerReview);
+router.post('/review/seller/:id/update', checkAuth, userReviewController.updateSellerReview);
 
 module.exports = router;
-

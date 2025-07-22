@@ -1,6 +1,6 @@
-const User = require('../models/user/userModel');
-const UserCreditBalance = require('../models/user/userCreditBalanceModel');
-const Location = require('../models/location/locationModel');
+const User = require('../../../models/user/userModel');
+const UserCreditBalance = require('../../../models/user/userCreditBalanceModel');
+const Location = require('../../../models/location/locationModel');
 const bcrypt = require('bcryptjs');
 
 exports.showUser = async (req, res) => {

@@ -6,10 +6,10 @@ const mobileUserRoutes = require('./src/routes/mobile/userRoutes');
 const mobileAuthRoutes = require('./src/routes/mobile/authRoutes');
 const mobileLocationRoutes = require('./src/routes/mobile/locationRoutes');
 const mobileSellerRoutes = require('./src/routes/mobile/sellerRoutes');
-const chatRoutes = require('./src/routes/mobile/chatRoutes');
-const { initializeSocketServer } = require('./src/socket/socketServer');
+// const chatRoutes = require('./src/routes/mobile/chatRoutes');
+// const webhookRoutes = require('./src/routes/mobile/webhookRoutes'); // Uncomment if/when you add webhook routes
+// const { initializeSocketServer } = require('./src/socket/socketServer');
 
-// Read Config From .env File
 dotenv.config();
 
 const app = express();
@@ -18,35 +18,22 @@ app.use(express.urlencoded({ extended: true }));
 
 // Create HTTP server
 const server = http.createServer(app);
-
-// Initialize Socket.IO
-const io = initializeSocketServer(server);
+// const io = initializeSocketServer(server);
 
 // API routes
-app.use('/api/v1/users', mobileUserRoutes);
 app.use('/api/v1/auth', mobileAuthRoutes);
 app.use('/api/v1/location', mobileLocationRoutes);
 app.use('/api/v1/seller', mobileSellerRoutes);
+app.use('/api/v1/user', mobileUserRoutes);
 
-// Admin Routes
-// ('/admin/v1', adminRoutes);
-
-// Chat Routes
-app.use('/api/v1/chat', chatRoutes);
-
-// Make io accessible to routes
-app.set('io', io);
+// app.use('/api/v1/chat', chatRoutes);
+// app.use('/api/v1/webhook', webhookRoutes); // Uncomment if/when you add webhook routes
+// app.set('io', io);
 
 // Connect to MongoDB
 mongoose.connect(process.env.MONGODB_URI)
   .then(() => {
     console.log('Connected to MongoDB');
-    
-    // Start server
-    const PORT = process.env.PORT || 5000;
-    server.listen(PORT, () => {
-      console.log(`Server running on port ${PORT}`);
-    });
   })
   .catch(err => {
     console.error('MongoDB connection error:', err);

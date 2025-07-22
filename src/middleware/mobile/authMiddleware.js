@@ -33,9 +33,9 @@ const checkAuth = async (req, res, next) => {
         req.username = decoded.username, 
         req.email = decoded.email,
         req.phone = decoded.phone,
-        req.device = "",
-        req.version = "",
-        req.lang = ""
+        req.app_device = "",
+        req.app_version = 0,
+        req.app_lang = 0
 
         next();
 

@@ -1,6 +1,6 @@
 // For User To Post a Newsfeed 
 
-const Newsfeed = require('../models/newsfeed/newsfeedModel');
+const Newsfeed = require('../../../models/newsfeed/newsfeedModel');
 
 // Create a new newsfeed
 exports.createNewsfeed = async (req, res) => {

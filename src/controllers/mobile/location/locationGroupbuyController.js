@@ -1,5 +1,5 @@
-const Location = require('../models/location/locationModel');
-const Groupbuy = require('../models/groupbuy/groupBuyModel');
+const Location = require('../../../models/location/locationModel');
+const GroupBuy = require('../../../models/groupbuy/groupBuyModel');
 
 exports.getLocationGroupbuys = async (req, res) => {
   try {
@@ -10,7 +10,7 @@ exports.getLocationGroupbuys = async (req, res) => {
         message: 'No location found with that ID'
       });
     }
-    const groupbuys = await Groupbuy.find({
+    const groupbuys = await GroupBuy.find({
       locationId: req.params.id
     });
     res.status(200).json({

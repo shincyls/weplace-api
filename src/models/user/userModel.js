@@ -10,6 +10,7 @@ const userSchema = new mongoose.Schema({
   oauthProvider: { type: String },
   oauthId: { type: String },
   locationId: { type: mongoose.Schema.Types.ObjectId, ref: 'Location' },
+  sellerId: { type: mongoose.Schema.Types.ObjectId, ref: 'Seller' },
   role: { type: String, enum: ['user', 'developer'], default: 'user' },
   currentCredits: { type: Number, default: 0.00, required: true },
   lastLogin: { type: Date },

@@ -1,5 +1,5 @@
-const Location = require('../models/location/locationModel');
-const Newsfeed = require('../models/newsfeed/newsfeedModel');
+const Location = require('../../../models/location/locationModel');
+const Newsfeed = require('../../../models/newsfeed/newsfeedModel');
 
 exports.getLocationNewsfeed = async (req, res) => {
   try {

@@ -9,13 +9,13 @@ const saleSchema = new mongoose.Schema({
   originalPrice: { type: Number },
   stock: { type: Number },
   businessHour: { 
-    1: "0-24",
-    2: "0-24",
-    3: "0-24",
-    4: "0-24",
-    5: "0-24",
-    6: "0-24",
-    7: "0-24"
+    1: { type: String, default: '0-24' },
+    2: { type: String, default: '0-24' },
+    3: { type: String, default: '0-24' },
+    4: { type: String, default: '0-24' },
+    5: { type: String, default: '0-24' },
+    6: { type: String, default: '0-24' },
+    7: { type: String, default: '0-24' }
   },
   startTime: { type: Date, required: true },
   endTime: { type: Date, required: true },

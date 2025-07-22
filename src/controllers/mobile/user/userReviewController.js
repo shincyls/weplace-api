@@ -1,7 +1,7 @@
 // For User To Review a Product or Seller
 
-const ProductReview = require('../models/product/productReviewModel');
-const SellerReview = require('../models/seller/sellerReviewModel');
+const ProductReview = require('../../../models/product/productReviewModel');
+const SellerReview = require('../../../models/seller/sellerReviewModel');
 
 // Create a new product review
 exports.createProductReview = async (req, res) => {

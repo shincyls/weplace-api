@@ -1,5 +1,5 @@
-const Location = require('../models/location/locationModel');
-const Sale = require('../models/sale/salelocationModel');
+const Location = require('../../../models/location/locationModel');
+const Sale = require('../../../models/sale/saleModel');
 
 exports.getLocationSales = async (req, res) => {
   try {

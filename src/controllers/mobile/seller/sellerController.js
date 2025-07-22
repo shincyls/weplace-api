@@ -1,19 +1,45 @@
 // Seller Controllers are using by User to register as a seller in a location
 
-const Seller = require('../models/seller/sellerModel');
-const Product = require('../models/product/productModel');
-const Sale = require('../models/sale/saleModel');
-const Groupbuy = require('../models/groupbuy/groupBuyModel');
-const SellerCreditBalance = require('../models/seller/sellerCreditBalanceModel');
-const Payment = require('../models/payment/paymentModel');
+const Seller = require('../../../models/seller/sellerModel');
+const Product = require('../../../models/product/productModel');
+const Sale = require('../../../models/sale/saleModel');
+const Groupbuy = require('../../../models/groupbuy/groupBuyModel');
+const SellerCreditBalance = require('../../../models/seller/sellerCreditBalanceModel');
+const Payment = require('../../../models/payment/paymentModel');
 
 // require('dotenv').config();
 
 // Register as new seller
 exports.createSeller = async (req, res) => {
   try {
-    const newSeller = new Seller(req.body);
+
+    const newSeller = new Seller({
+      userId: req.user_id,
+      sellerName: req.body.sellerName,
+      sellerEmail: req.body.sellerEmail,
+      sellerType: req.body.sellerType,
+      companyPhone: req.body.companyPhone,
+      companyName: req.body.companyName,
+      companyRegNo: req.body.companyRegNo,
+      companyAddressLine1: req.body.companyAddressLine1,
+      companyAddressLine2: req.body.companyAddressLine2,
+      companyAddressLine3: req.body.companyAddressLine3,
+      companyAddressCity: req.body.companyAddressCity,
+      companyAddressState: req.body.companyAddressState,
+      companyAddressPoscode: req.body.companyAddressPoscode,
+      companyAddressCountry: req.body.companyAddressCountry,
+      bankName: req.body.bankName,
+      bankAccount: req.body.bankAccount,
+      attachments: req.body.attachments
+    });
+
     const savedSeller = await newSeller.save();
+
+    await User.findByIdAndUpdate(
+      req.user_id, 
+      {"sellerId" : savedSeller._id}
+    );
+
     res.status(201).json(savedSeller);
   } catch (error) {
     res.status(400).json({ message: error.message });

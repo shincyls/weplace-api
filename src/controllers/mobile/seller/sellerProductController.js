@@ -1,6 +1,6 @@
 // For Seller To Mange Product
 
-const Product = require('../models/product/productModel');
+const Product = require('../../../models/product/productModel');
 
 // Get all products from seller Id in the token
 exports.getSellerProducts = async (req, res) => {
