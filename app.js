@@ -1,6 +1,5 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const dotenv = require('dotenv');
 const http = require('http');
 const mobileUserRoutes = require('./src/routes/mobile/userRoutes');
 const mobileAuthRoutes = require('./src/routes/mobile/authRoutes');
@@ -9,8 +8,6 @@ const mobileSellerRoutes = require('./src/routes/mobile/sellerRoutes');
 // const chatRoutes = require('./src/routes/mobile/chatRoutes');
 // const webhookRoutes = require('./src/routes/mobile/webhookRoutes'); // Uncomment if/when you add webhook routes
 // const { initializeSocketServer } = require('./src/socket/socketServer');
-
-dotenv.config();
 
 const app = express();
 app.use(express.json());

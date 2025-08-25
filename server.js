@@ -1,3 +1,6 @@
+const dotenv = require('dotenv');
+dotenv.config();
+
 const { app, server } = require('./app');
 
 // Read Config From .env File
