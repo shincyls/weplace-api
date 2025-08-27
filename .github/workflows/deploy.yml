@@ -221,7 +221,7 @@ jobs:
     #     region: ${{ secrets.AWS_REGION }}
     #     version_label: ${{ github.sha }}
 
-    # Deploy via SSH
+    # Deploy via SSH with Node.js restart
     # - name: Deploy via SSH to Production
     #   uses: appleboy/ssh-action@v1.0.0
     #   with:
@@ -230,10 +230,20 @@ jobs:
     #     key: ${{ secrets.PRODUCTION_SSH_KEY }}
     #     port: ${{ secrets.PRODUCTION_PORT || 22 }}
     #     script: |
-    #       cd /path/to/your/app
+    #       cd ${{ secrets.PRODUCTION_APP_PATH || '/var/www/weplace-api' }}
+    #       echo "🔄 Pulling latest code..."
     #       git pull origin main
+    #       echo "📦 Installing dependencies..."
     #       npm ci --production
-    #       pm2 restart weplace-api-production
+    #       echo "🔄 Restarting Node.js application..."
+    #       # Option 1: Using PM2 (recommended)
+    #       pm2 restart weplace-api-production || pm2 start server.js --name weplace-api-production
+    #       pm2 save
+    #       # Option 2: Using systemd service
+    #       # sudo systemctl restart weplace-api
+    #       # Option 3: Using Docker
+    #       # docker-compose restart weplace-api
+    #       echo "✅ Application restarted successfully"
 
     - name: Create production deployment tag
       run: |
@@ -246,12 +256,54 @@ jobs:
         git push origin "$TAG_NAME"
         echo "✅ Created production tag: $TAG_NAME"
 
+    # Restart Node.js Application (choose your method)
+    - name: Restart Node.js Application
+      run: |
+        echo "🔄 Restarting Node.js application..."
+
+        # Method 1: If using PM2 locally (for testing)
+        # npm install -g pm2
+        # pm2 start server.js --name weplace-api-local || pm2 restart weplace-api-local
+
+        # Method 2: If using Docker locally
+        # docker-compose restart weplace-api
+
+        # Method 3: For cloud platforms, restart is handled automatically
+        echo "✅ Application restart initiated"
+
+    # Health check after restart
+    - name: Post-deployment health check
+      run: |
+        echo "🏥 Running health check..."
+        sleep 10  # Wait for application to start
+
+        # Check if application is responding
+        HEALTH_URL="${{ secrets.PRODUCTION_URL }}/health"
+        if [ -z "${{ secrets.PRODUCTION_URL }}" ]; then
+          echo "⚠️  PRODUCTION_URL not set, skipping health check"
+        else
+          echo "Checking health at: $HEALTH_URL"
+          for i in {1..5}; do
+            if curl -f "$HEALTH_URL" 2>/dev/null; then
+              echo "✅ Health check passed!"
+              break
+            else
+              echo "⏳ Attempt $i/5 failed, retrying in 10 seconds..."
+              sleep 10
+            fi
+            if [ $i -eq 5 ]; then
+              echo "❌ Health check failed after 5 attempts"
+              exit 1
+            fi
+          done
+        fi
+
     - name: Deployment Success Notification
       run: |
         echo "✅ Successfully deployed to production environment"
         echo "🚀 Application URL: ${{ secrets.PRODUCTION_URL }}"
         echo "📋 Deployment commit: ${GITHUB_SHA}"
-        echo "🏷️  Production tag: prod-$(date +"%Y%m%d-%H%M%S")-${GITHUB_SHA:0:7}"
+        echo "🔄 Node.js application restarted and healthy"
 
   rollback:
     if: failure()

@@ -17,6 +17,17 @@ app.use(express.urlencoded({ extended: true }));
 const server = http.createServer(app);
 // const io = initializeSocketServer(server);
 
+// Health check endpoint
+app.get('/health', (req, res) => {
+  res.status(200).json({
+    status: 'OK',
+    timestamp: new Date().toISOString(),
+    uptime: process.uptime(),
+    environment: process.env.NODE_ENV || 'development',
+    version: process.env.npm_package_version || '1.0.0'
+  });
+});
+
 // API routes
 app.use('/api/v1/auth', mobileAuthRoutes);
 app.use('/api/v1/location', mobileLocationRoutes);
