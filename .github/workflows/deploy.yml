@@ -15,26 +15,34 @@ on:
         description: 'Version to deploy (leave empty for latest)'
         required: false
         type: string
-  
-  workflow_run:
-    workflows: ["CI/CD Pipeline"]
-    types:
-      - completed
-    branches: [main]
+      confirm_deployment:
+        description: 'Type "DEPLOY" to confirm deployment'
+        required: true
+        type: string
 
 env:
   NODE_VERSION: '20.x'
 
 jobs:
-  debug-info:
+  validate-deployment:
     runs-on: ubuntu-latest
     steps:
+    - name: Validate deployment confirmation
+      run: |
+        if [ "${{ github.event.inputs.confirm_deployment }}" != "DEPLOY" ]; then
+          echo "❌ Deployment not confirmed. Please type 'DEPLOY' in the confirmation field."
+          exit 1
+        fi
+        echo "✅ Deployment confirmed"
+
     - name: Debug workflow inputs
       run: |
         echo "Event name: ${{ github.event_name }}"
         echo "Environment input: ${{ github.event.inputs.environment }}"
+        echo "Version input: ${{ github.event.inputs.version }}"
         echo "Ref: ${{ github.ref }}"
         echo "Repository: ${{ github.repository }}"
+        echo "Triggered by: ${{ github.actor }}"
   deploy-staging:
     if: |
       (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
