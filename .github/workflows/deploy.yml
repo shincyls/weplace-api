@@ -26,10 +26,18 @@ env:
   NODE_VERSION: '20.x'
 
 jobs:
+  debug-info:
+    runs-on: ubuntu-latest
+    steps:
+    - name: Debug workflow inputs
+      run: |
+        echo "Event name: ${{ github.event_name }}"
+        echo "Environment input: ${{ github.event.inputs.environment }}"
+        echo "Ref: ${{ github.ref }}"
+        echo "Repository: ${{ github.repository }}"
   deploy-staging:
     if: |
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging') ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.ref == 'refs/heads/develop')
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'staging')
     runs-on: ubuntu-latest
     environment: staging
     
@@ -109,8 +117,7 @@ jobs:
 
   deploy-production:
     if: |
-      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production') ||
-      (github.event_name == 'workflow_run' && github.event.workflow_run.conclusion == 'success' && github.ref == 'refs/heads/main')
+      (github.event_name == 'workflow_dispatch' && github.event.inputs.environment == 'production')
     runs-on: ubuntu-latest
     environment: production
 
